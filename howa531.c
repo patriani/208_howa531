@@ -6,63 +6,38 @@
  Copyright   : Don't touch my stuff!!!
  Description : Hello World in C, Ansi-style
  ============================================================================
- */
+*	TO DO:
+*  	
+*	Run the program yet again with ls -al as
+* 	the command tail. Is the entire command tail
+* 	being passed to the child?
+* 	
+*	RESULT: Yes, the entire command is being passed to the child
+* 	==============================================
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+#include <unistd.h> // includes fork() function
+#include <sys/types.h> //  includes pid_t type 
+#include <sys/wait.h> // define constants to use in waitpid()
 
+// argc represents the number of commands 
+// argv is an array of commands entered
 int main(int argc, char* argv[]) {
 
 	pid_t pid;
 
-	if((pid = fork()) < 0){
-		perror("fork");
+	if((pid = fork()) < 0){ // pid < 0 when the fork goes wrong
+		perror("fork"); // print the system fail
 	}
 	else if(pid == 0){
 		//Child process
-		if(argc > 1){
+		if(argc > 1){ // when commands are entered
 			execvp(argv[1], &argv[1]);
 			perror("execvp");
 			exit(0);
 		}
-		/*	-----------------------
-		 *         QUESTIONS
-		 *  -----------------------
-		 *
-		 * 	1) Run the executable with no command parameters and record the results
-		 * 			RESULT:root@darkstar:~/workspace/howa541/Debug# ./howa541
-						Thanks for using the program!
-						Not enough parameters
-						: Success
-		 *	==============================================
-		 *
-		 * 	2) Run the program again with ls in the
-		 * 	command tail (xxxx543 ls). Record the results.
-		 * 			RESULT:root@darkstar:~/workspace/howa541/Debug# ./howa541 ls
-						Thanks for using the program!
-						root@darkstar:~/workspace/howa541/Debug# howa541  makefile  objects.mk  sources.mk  src
-		 * 	==============================================
-		 *
-		 * 	3) Run the program yet again with ls -al as
-		 * 	the command tail. Is the entire command tail
-		 * 	being passed to the child?
-		 * 			RESULT: Yes, the entire command is being passed to the child
-		 * 	==============================================
-		 *
-		 * 	4) Explain why the call to execvp uses argv[1]
-		 * 	instead of argv[0]. What ould happen if argv[0]
-		 * 	were used?
-		 * 			RESULT: Because it points to the file location,
-		 * 			so we're wanting it to not look at a location but
-		 * 			be pointed towards the command that we want to execute
-		 * 			RESULT: If it was pointing towards the 0 pointer, then it
-		 * 			launch the program again and again with the same
-		 * 			parameters each time and lock up the system.
-		 * 	==============================================
-		 */
 		else{
 			perror("Not enough parameters\n");
 			exit(0);
